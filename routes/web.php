@@ -38,10 +38,10 @@ Route::get('podcasts/delete/{id}','PodcastController@destroy');
 Route::get('episodes/delete/{id}','EpisodeController@destroy');
 Route::get('streams/delete/{id}','StreamController@destroy');
 
-
 //**************end****************//
 
 
+// --            Radios actions     ---//
 Route::get('radios','RadioController@index');
 Route::post('radios','RadioController@store');
 Route::get('radios/create','RadioController@create');
