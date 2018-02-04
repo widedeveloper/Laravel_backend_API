@@ -53,6 +53,7 @@
 <script src="{{asset('public/assets/dist/js/app.min.js')}}"></script>
 <!-- AdminLTE for demo purposes -->
 <script src="{{asset('public/assets/dist/js/demo.js')}}"></script>
+<meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 <body class="hold-transition login-page">
 <div class="login-box">
@@ -61,6 +62,7 @@
   </div>
   <!-- /.login-logo -->
   <div class="login-box-body">
+ 
     <p class="login-box-msg">Sign in to start your session</p>
      @if($status = Session::get("status"))
         <div class="alert alert-info form-group">
@@ -130,7 +132,12 @@
       radioClass: 'iradio_square-blue',
       increaseArea: '20%' // optional
     });
+
+    //
+    
   });
+
+
 </script>
 </body>
 </html>

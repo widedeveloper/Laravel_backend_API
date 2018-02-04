@@ -10,36 +10,101 @@
 
         $(".stream_add").click(function(){
             var tr = $(".stream_tr_template .template_table tr").get(0);
-            console.log(tr);
             var clone = tr.cloneNode(true);
             // stream_table
             var stream_table = $(".stream_table");
             $(clone).appendTo(stream_table);
         });
+
+        
     });
+
+   function delete_stream(obj) {
+        var tr_obj = obj.parent().parent();
+        console.log(tr_obj);
+        var item_id = tr_obj.attr("item_id");
+        if(item_id != "new") {
+            if(confirm("Are you sure?")==true) {
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                $.ajax({
+                    type: "POST",
+                    dataType:'json',
+                    url: "{{ url('streams') }}"+"/delete_stream",
+                    data: {
+                        id : item_id
+                    },
+                    success: function (data) {
+                        alert(data);
+                    }
+                });
+            }
+        }
+        tr_obj.remove();
+    }
 
     function readURL(input) {
         if (input.files && input.files[0]) {
             var reader = new FileReader();
-
             reader.onload = function (e) {
                 $('#logo_file')
                     .attr('src', e.target.result)
                     .width(145);
-                    // .height(145);
             };
             reader.readAsDataURL(input.files[0]);
         }
     }
-</script>
 
+    function checkclick(obj){
+        if (obj.checked) {
+           var status = 1;
+        } else { 
+           var status = 0;
+        }
+        $(obj).parent().find("#chkstream").val(status);
+        alert(status)
+    }
+    function select_country(obj) {
+        var country_id = obj.val();
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        $.ajax({
+            type: "POST",
+            dataType:'json',
+            url: "{{ url('radios') }}"+"/select_country",
+            data: {
+                id : country_id
+            },
+            success: function (data) {
+
+                if(data.status == "OK"){
+                    $(".region_list option").remove();
+                    var region_list = data.region;
+                    var region_option = "";
+                    for(var i =0; i<region_list.length; i++){
+                        region_option += '<option  value="'+ region_list[i].id +'" >'+ region_list[i].name +'</option>';
+                    }
+                    $(".region_list").append($(region_option));
+                }
+            }
+        });
+
+    }
+</script>
+<meta name="csrf-token" content="{{ csrf_token() }}">
 <div class="content-wrapper" style="min-height: 916px;">
+
     <!-- Content Header (Page header) -->
     <section class="content-header">
         <h1>
            Edit Radios
         </h1>
-       
     </section>
 
     <!-- Main content -->
@@ -60,7 +125,7 @@
                     <div class="box-body">
                         <div class="form-group">
                             <label for="Name">Name*</label>
-                            <input class="form-control" name="name" value="{{$radio->name}}" type="text">
+                            <input class="form-control" name="name" value="{{$radio->name}}" type="text" required>
                         </div>
                         <div class="form-group">
                             <label for="Dial">Dial</label>
@@ -88,13 +153,10 @@
                                 <option value="AM" {{($radio->type=="AM")?"selected":""}}>AM</option>
                             </select>
                         </div>
+                      
                         <div class="form-group">
-                            <label for="exampleInputEmail1">Original ID</label>
-                            <input class="form-control" name="original_id" value="{{$radio->id}}" type="Number">
-                        </div>
-                         <div class="form-group">
                             <label>Country*</label>
-                            <select class="form-control" name="country_id">
+                            <select class="form-control" name="country_id" onchange="select_country($(this))">
                             @foreach ($countries as $row)
                                 <option value="{{$row->id}}" {{($row->id==$radio->country_id)?"selected":""}}>{{$row->name}}</option>
                             @endforeach
@@ -102,43 +164,11 @@
                         </div>
                         <div class="form-group">
                             <label>Region</label>
-                            <select class="form-control" name="region_id">
+                            <select class="form-control region_list" name="region_id" >
                             @foreach ($regions as $row)
                                 <option value="{{$row->id}}" {{($row->id==$radio->region_id)?"selected":""}}>{{$row->name}}</option>
                             @endforeach
                             </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="exampleInputEmail1">Source</label>
-                            <input class="form-control" name="source" value="{{$radio->source}}" type="text">
-                        </div>
-                        <div class="form-group">
-                            <label for="exampleInputEmail1">Slogan</label>
-                            <input class="form-control" name="slogan" value="{{$radio->slogan}}" type="text">
-                        </div>
-                        <div class="form-group">
-                            <label>Description</label>
-                            <textarea class="form-control" rows="3" name="description">{{$radio->description}}</textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="exampleInputEmail1">Address</label>
-                            <input class="form-control" name="address" value="{{$radio->address}}" type="text">
-                        </div>
-                        <div class="form-group">
-                            <label for="exampleInputEmail1">Email</label>
-                            <input class="form-control" name="email" value="{{$radio->email}}" type="email">
-                        </div>
-                        <div class="form-group">
-                            <label for="exampleInputEmail1">Telephone</label>
-                            <input class="form-control" name="telephone" value="{{$radio->telephone}}" type="text">
-                        </div>
-                        <div class="form-group">
-                            <label for="exampleInputEmail1">Language</label>
-                            <input class="form-control" name="language" value="{{$radio->language}}" type="text">
-                        </div>
-                        <div class="form-group">
-                            <label for="exampleInputEmail1">Tunein ID</label>
-                            <input class="form-control" name="tuneid" value="{{$radio->tuneid}}" type="number">
                         </div>
                         <div class="form-group">
                             <label for="exampleInputEmail1">Categories</label>
@@ -166,18 +196,24 @@
                                 </thead>
                                 <tbody class="stream_table">
                                     @foreach ($stream as $row)
-                                    <tr>
-                                        <td style="display:none"><input name="stream_id[]" id="stream_id" value={{$row->id}}></td>
-                                        <td><input class="form-control" type="text" name="url[]" value="{{$row->url}}" /></td>
+                                    <tr item_id="{{$row->id}}">
+                                        <td style="display:none"><input name="stream_id[]" id="stream_id" value="{{$row->id}}"></td>
+                                        <td><input class="form-control" type="text" name="stream_url[]" value="{{$row->url}}" required/></td>
                                         <td>
-                                            <select  class="form-control" name="type[]">
+                                            <select  class="form-control" name="stream_type[]">
                                             @foreach ($stream_types as $type)
                                                 <option value="{{$type->stream_type}}" {{($type->stream_type==$row->type)?"selected":""}}>{{$type->stream_type}}</option>
                                             @endforeach
                                             </select>
+                                            
                                         </td>
-                                        <td><input type="checkbox" name="status[]" {{($row->status==1)?"checked":""}}/></td>
-                                        <td><span class="label label-danger">Delete</span></td>
+                                        <td>
+                                            <input onclick = "checkclick(this)" type="checkbox" name="stream_status[]" value="{{($row->status==1)?1:0}}" {{($row->status==1)?"checked":""}}  />
+                                            <input type="hidden" name="s_status[]" id="chkstream" value="{{($row->status==1)?'1':'0'}}" />
+                                        </td>
+                                        <td>
+                                            <a onclick="delete_stream($(this))" class="label label-danger delete_stream_row" >Delete</a>
+                                        </td>
                                     </tr>
                                     @endforeach
                                 </tbody>
@@ -203,18 +239,25 @@
 
     <div class="stream_tr_template" style="display:none">
         <table class="template_table">
-            <tr >
-                <td style="display:none"><input name="stream_id[]" id="stream_id" value="new_row"></td>
-                <td><input class="form-control" type="text" name="url[]" value="" /></td>
+            <tr item_id = "new">
+                <td style="display:none"><input name="stream_id[]" id="stream_id" value="new_row" required></td>
+                <td><input class="form-control" type="text" name="stream_url[]" value="" /></td>
                 <td>
-                    <select  class="form-control" name="type[]">
+                    <select  class="form-control" name="stream_type[]">
                     @foreach ($stream_types as $type)
                         <option value="{{$type->stream_type}}" >{{$type->stream_type}}</option>
                     @endforeach
                     </select>
+                   
                 </td>
-                <td><input type="checkbox" name="status[]" /></td>
-                <td><span class="label label-danger">Delete</span></td>
+                <td>
+                    <input onclick = "checkclick(this)" type="checkbox" name="stream_status[]" value="0"/>
+                    <input type="hidden" name="s_status[]" id="chkstream" value="0" />
+                                        
+                </td>
+                <td>
+                    <a onclick="delete_stream($(this))" class="label label-danger delete_stream_row">Delete</a>
+                </td>
             </tr>
         </table>
     </div>

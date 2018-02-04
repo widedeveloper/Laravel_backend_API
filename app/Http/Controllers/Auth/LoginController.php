@@ -61,13 +61,18 @@ class LoginController extends Controller
             }
             if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) 
             {
-
                 $is_active = Auth::user()->is_active;
                 if($is_active==0){
+                    Auth::logout();
                     return redirect()->back()->withInput($request->only("email", "password"))->with('status','Wait the allow for this site.');
                 }
 
-                // $isAdmin = Auth::user()->role;
+                $isAdmin = Auth::user()->role;
+                if($isAdmin!=1){
+                    Auth::logout();
+                    return redirect()->back()->withInput($request->only("email", "password"))->with('status','You have not administrator permission.');
+                }
+
                 // if($isAdmin == 2 && $request->is('admin/*')) {
                 //     return redirect(url("admin/home"));
                 // }
@@ -79,8 +84,7 @@ class LoginController extends Controller
            
         }else{
             return redirect()->back()->withInput($request->only("email", "password"))->withErrors($validator);
-        }
-       
+        }       
     }
 
      public function authenticate($email,$password)
@@ -96,5 +100,9 @@ class LoginController extends Controller
         Auth::logout();
         return redirect()->intended("/");
         // return view("auth.login");
+    }
+
+    public function changepassword() {
+        return view('auth.passwords.changepass');
     }
 }

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Radios</title>
+  <title>Portal</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <!-- Bootstrap 3.3.6 -->
@@ -87,7 +87,7 @@
    
       <!-- sidebar menu: : style can be found in sidebar.less -->
       <ul class="sidebar-menu">
-        <li><a href="./assets/index.html"><i class="fa fa-circle-o"></i> Dashboard</a></li>
+        <!-- <li><a href="./assets/index.html"><i class="fa fa-circle-o"></i> Dashboard</a></li> -->
      
         <li class="treeview">
           <a href="#">
@@ -124,17 +124,16 @@
             </span>
           </a>
           <ul class="treeview-menu">
-            <li><a href="../forms/general.html"><i class="fa fa-circle-o"></i> General Elements</a></li>
-            <li><a href="../forms/advanced.html"><i class="fa fa-circle-o"></i> Advanced Elements</a></li>
-            <li><a href="../forms/editors.html"><i class="fa fa-circle-o"></i> Editors</a></li>
+            <li><a href="{{url('/podcasts')}}"><i class="fa fa-circle-o"></i> Podcast</a></li>
+            <li><a href="{{url('/episodes')}}"><i class="fa fa-circle-o"></i> Episodes</a></li>
           </ul>
         </li>
         
-        <li><a href="./assets/documentation/index.html"><i class="fa fa-book"></i> <span>Categories</span></a></li>
-        <li><a href="#"><i class="fa fa-circle-o text-red"></i> <span>Radios</span></a></li>
-        <li><a href="#"><i class="fa fa-circle-o text-yellow"></i> <span>Streamings</span></a></li>
-        <li><a href="#"><i class="fa fa-circle-o text-aqua"></i> <span>Reports</span></a></li>
-        <li><a href="#"><i class="fa fa-circle-o text-aqua"></i> <span>Change Password</span></a></li>
+        <!-- <li><a href=""><i class="fa fa-book"></i> <span>Categories</span></a></li>  -->
+        <li><a href="{{url('/radios')}}"><i class="fa fa-circle-o text-red"></i> <span>Radios</span></a></li>
+        <li><a href="{{url('/streams')}}"><i class="fa fa-circle-o text-yellow"></i> <span>Streamings</span></a></li>
+        <li><a href="{{url('/reports')}}"><i class="fa fa-circle-o text-aqua"></i> <span>Reports</span></a></li>
+        <li><a href="{{url('/changepass')}}"><i class="fa fa-circle-o text-aqua"></i> <span>Change Password</span></a></li>
         <li><a href="{{route('logout')}}"><i class="fa fa-circle-o text-aqua"></i> <span>Logout</span></a></li>
       </ul>
     </section>
